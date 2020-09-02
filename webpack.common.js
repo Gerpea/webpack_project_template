@@ -52,7 +52,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: env == 'production' ? '[name].css' : '[name].[hash]css',
+      filename: env == 'production' ? '[name].css' : '[name].[hash].css',
       chunkFilename: env == 'production' ? '[id].[hash].css' : '[id].[hash].css',
       ignoreOrder: false,
     }),
