@@ -13,24 +13,36 @@ module.exports = {
   output: {
     filename: './js/bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: env === 'production' ? '/' : '',
   },
   module: {
     rules: [{
         test: /\.js$/,
         include: path.resolve(__dirname, 'src/js'),
-        use: 'babel-loader',
         exclude: [
           /node_modules/,
         ],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime']
+          }
+        }
       },
       {
         test: /\.(sa|sc|c)ss$/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: env === 'development',
+              reloadAll: true,
+            },
+          },
           {
             loader: 'css-loader',
-            options: { modules: true, importLoaders: 1 },
+            options: { modules: false, importLoaders: 1 },
           },
           {
             loader: 'postcss-loader',
@@ -52,8 +64,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: env == 'production' ? '[name].css' : '[name].[hash].css',
-      chunkFilename: env == 'production' ? '[id].[hash].css' : '[id].[hash].css',
+      filename: env == 'production' ? '[name].[hash].css' : '[name].css',
+      chunkFilename: env == 'production' ? '[id].[hash].css' : '[id].css',
       ignoreOrder: false,
     }),
     new HtmlWebpackPlugin({
